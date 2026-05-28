@@ -35,7 +35,5 @@ Cada jugador recibe una combinacion aleatoria de arma principal y secundaria seg
 - Añadir sonido de balas a la hora de randomizar.
 - Arreglar typos.
 - Ver como hacer para poder compartir los loadouts con amigos de forma facil.
+- Imágenes: reducir peso y cambiar nombre
 
-## Objetivo
-
-Ideal para squads que quieren añadir variedad, caos divertido y un poco de ceremonia tactica antes de cada partida.
