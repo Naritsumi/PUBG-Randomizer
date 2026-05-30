@@ -600,8 +600,8 @@ h2 {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 10px;
-  margin-bottom: 12px;
+  padding: 7px 10px;
+  margin-bottom: 10px;
   border: 1px dashed rgba(255, 136, 0, .24);
   background: rgba(18, 12, 6, .52);
 }
@@ -616,7 +616,7 @@ h2 {
 .operator h3 {
   min-width: 0;
   overflow-wrap: anywhere;
-  font-size: 1.35rem;
+  font-size: 1.12rem;
   letter-spacing: .12em;
   text-transform: uppercase;
 }
@@ -700,14 +700,14 @@ h2 {
 }
 
 .share-loadout-button {
-  min-height: 30px;
-  padding: 0 12px;
+  min-height: 26px;
+  padding: 0 10px;
   border: 1px solid rgba(255, 136, 0, .46);
   background: rgba(18, 12, 6, .62);
   color: var(--accent);
   cursor: pointer;
   font-family: ui-monospace, Consolas, monospace;
-  font-size: .68rem;
+  font-size: .62rem;
   font-weight: 800;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -721,7 +721,7 @@ h2 {
 .reel-pair {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
 }
 
 .case-pair {
@@ -737,7 +737,7 @@ h2 {
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 7px;
+  margin-bottom: 5px;
 }
 
 .reel-label {
@@ -752,7 +752,7 @@ h2 {
 }
 
 .dial-window {
-  height: 118px;
+  height: 92px;
   perspective: 850px;
   overflow: hidden;
   position: relative;
@@ -782,19 +782,19 @@ h2 {
 .dial-face {
   position: absolute;
   inset: 0;
-  height: 118px;
+  height: 92px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
+  gap: 10px;
+  padding: 9px 12px;
   background: linear-gradient(180deg, #1a1007, #0c0804);
-  transform: rotateX(calc(var(--face) * 36deg)) translateZ(148px);
+  transform: rotateX(calc(var(--face) * 36deg)) translateZ(126px);
   backface-visibility: hidden;
 }
 
 .weapon-mark {
-  width: 142px;
-  height: 76px;
+  width: 112px;
+  height: 60px;
   flex: 0 0 auto;
   position: relative;
 }
@@ -813,7 +813,7 @@ h2 {
 
 .weapon-name {
   color: var(--text);
-  font-size: 1.55rem;
+  font-size: 1.18rem;
   line-height: 1.05;
   letter-spacing: .08em;
   overflow: hidden;
@@ -824,7 +824,7 @@ h2 {
 .weapon-meta {
   margin-top: 5px;
   color: var(--accent);
-  font-size: .68rem;
+  font-size: .62rem;
 }
 
 .case-reel {
@@ -943,16 +943,16 @@ h2 {
 }
 
 .locked-line {
-  min-height: 32px;
+  min-height: 30px;
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 12px;
-  padding: 7px 10px;
+  margin-top: 10px;
+  padding: 6px 10px;
   border: 1px solid rgba(255, 136, 0, .36);
   background: rgba(18, 12, 6, .5);
   font-family: ui-monospace, Consolas, monospace;
-  font-size: .75rem;
+  font-size: .68rem;
   color: var(--muted);
   letter-spacing: .08em;
 }
