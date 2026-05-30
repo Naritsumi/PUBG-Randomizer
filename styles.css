@@ -785,15 +785,15 @@ h2 {
   height: 92px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
+  gap: 8px;
+  padding: 9px 10px;
   background: linear-gradient(180deg, #1a1007, #0c0804);
   transform: rotateX(calc(var(--face) * 36deg)) translateZ(126px);
   backface-visibility: hidden;
 }
 
 .weapon-mark {
-  width: 112px;
+  width: 96px;
   height: 60px;
   flex: 0 0 auto;
   position: relative;
@@ -813,9 +813,9 @@ h2 {
 
 .weapon-name {
   color: var(--text);
-  font-size: 1.18rem;
+  font-size: .96rem;
   line-height: 1.05;
-  letter-spacing: .08em;
+  letter-spacing: .04em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -824,7 +824,8 @@ h2 {
 .weapon-meta {
   margin-top: 5px;
   color: var(--accent);
-  font-size: .62rem;
+  font-size: .58rem;
+  letter-spacing: .08em;
 }
 
 .case-reel {
