@@ -461,7 +461,7 @@ function drawShareText(ctx, text, x, y, maxWidth, lineHeight) {
 
 async function renderLoadoutImage(card) {
   const width = 1080;
-  const height = 620;
+  const height = 760;
   const canvas = document.createElement("canvas");
   canvas.width = width * 2;
   canvas.height = height * 2;
@@ -520,27 +520,50 @@ async function renderLoadoutImage(card) {
   ctx.lineWidth = 3;
   ctx.strokeRect(740, 62, 260, 260);
 
-  const drawWeaponPanel = (label, name, ammo, image, y) => {
-    ctx.fillStyle = "rgba(8, 6, 4, .74)";
-    ctx.fillRect(62, y, 956, 138);
-    ctx.strokeStyle = "rgba(255,136,0,.38)";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(62, y, 956, 138);
-
-    if (image) ctx.drawImage(image, 82, y + 16, 260, 106);
-    ctx.fillStyle = "#ff8800";
-    ctx.font = "700 18px Consolas, monospace";
-    ctx.fillText(label, 378, y + 42);
-    ctx.fillStyle = "#e8e2cf";
-    ctx.font = "900 42px Arial, sans-serif";
-    ctx.fillText(name, 378, y + 88);
-    ctx.fillStyle = "#a87d55";
-    ctx.font = "700 17px Consolas, monospace";
-    ctx.fillText(ammo, 378, y + 116);
+  const drawWeaponFallback = (x, y) => {
+    ctx.save();
+    ctx.strokeStyle = "rgba(255,136,0,.46)";
+    ctx.fillStyle = "rgba(232,226,207,.18)";
+    ctx.lineWidth = 3;
+    ctx.fillRect(x + 28, y + 47, 170, 12);
+    ctx.strokeRect(x + 28, y + 47, 170, 12);
+    ctx.fillRect(x + 188, y + 42, 48, 18);
+    ctx.strokeRect(x + 188, y + 42, 48, 18);
+    ctx.fillRect(x + 82, y + 60, 20, 42);
+    ctx.strokeRect(x + 82, y + 60, 20, 42);
+    ctx.fillRect(x + 210, y + 49, 38, 7);
+    ctx.restore();
   };
 
-  drawWeaponPanel("PRIMARY", primary, primaryAmmo, primaryImage, 346);
-  drawWeaponPanel("SECONDARY", secondary, secondaryAmmo, secondaryImage, 496);
+  const drawWeaponPanel = (label, name, ammo, image, y) => {
+    ctx.fillStyle = "rgba(8, 6, 4, .74)";
+    ctx.fillRect(62, y, 956, 150);
+    ctx.strokeStyle = "rgba(255,136,0,.38)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(62, y, 956, 150);
+
+    ctx.fillStyle = "rgba(255,136,0,.07)";
+    ctx.fillRect(82, y + 18, 260, 112);
+    ctx.strokeStyle = "rgba(255,136,0,.18)";
+    ctx.strokeRect(82, y + 18, 260, 112);
+    if (image) {
+      ctx.drawImage(image, 92, y + 26, 240, 96);
+    } else {
+      drawWeaponFallback(82, y + 18);
+    }
+    ctx.fillStyle = "#ff8800";
+    ctx.font = "700 18px Consolas, monospace";
+    ctx.fillText(label, 378, y + 46);
+    ctx.fillStyle = "#e8e2cf";
+    ctx.font = "900 42px Arial, sans-serif";
+    ctx.fillText(name, 378, y + 94);
+    ctx.fillStyle = "#a87d55";
+    ctx.font = "700 17px Consolas, monospace";
+    ctx.fillText(ammo, 378, y + 124);
+  };
+
+  drawWeaponPanel("PRIMARY", primary, primaryAmmo, primaryImage, 360);
+  drawWeaponPanel("SECONDARY", secondary, secondaryAmmo, secondaryImage, 540);
 
   return canvas;
 }
