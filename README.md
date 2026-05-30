@@ -30,8 +30,3 @@ Cada jugador recibe una combinacion aleatoria de arma principal y secundaria seg
 5. Prepara los loadouts.
 6. Randomiza armas para todos.
 
-## To Do
-
-- Arreglar typos.
-- Ver como hacer para poder compartir los loadouts con amigos de forma facil.
-
