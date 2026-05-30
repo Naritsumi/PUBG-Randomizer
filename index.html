@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mi Excel - Loadout Randomizer</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">OPERACION . VERDE</p>
+          <h1>MI EXCEL</h1>
+          <p class="subtitle">LOADOUT RANDOMIZER . BATTLE ROYALE</p>
+        </div>
+        <nav class="stepper" aria-label="Progreso">
+          <a href="#squad" class="step-link is-active">01 MODO</a>
+          <a href="#mapas" class="step-link is-hidden" id="map-step-link">02 MAPA</a>
+          <a href="#loadouts" class="step-link is-hidden" id="loadout-step-link">03 LOADOUT</a>
+        </nav>
+      </header>
+
+      <section id="squad" class="stage stage-squad">
+        <div class="section-heading">
+          <div>
+            <h2>01 . Modo de despliegue</h2>
+            <p id="squad-map-note">Configura el tipo de despliegue y tus operativos.</p>
+          </div>
+        </div>
+        <div id="mode-buttons" class="mode-cards" role="group" aria-label="Modo">
+          <button type="button" data-mode="solo" class="mode-card is-active">
+            <span>
+              <strong>Solo</strong>
+              <small>Loadout individual</small>
+            </span>
+            <span class="mode-dots">o</span>
+          </button>
+          <button type="button" data-mode="squad" class="mode-card">
+            <span>
+              <strong>Squad</strong>
+              <small>Hasta 4 jugadores . 2x2 grid</small>
+            </span>
+            <span class="mode-dots">oooo</span>
+          </button>
+        </div>
+        <div id="squad-size-row" class="squad-size-row is-hidden">
+          <span id="squad-size-label" class="squad-size-label">Operativos:</span>
+          <div id="squad-size-buttons" class="squad-size-buttons" role="group" aria-label="Numero de operativos">
+            <button type="button" data-squad-size="2">2</button>
+            <button type="button" data-squad-size="3">3</button>
+            <button type="button" data-squad-size="4" class="is-active">4</button>
+          </div>
+        </div>
+        <div class="stage-actions deploy-actions">
+          <button id="deploy-button" class="muzzle-button" type="button">Desplegar</button>
+        </div>
+        <div id="name-panel" class="name-panel is-hidden">
+          <div class="section-heading compact">
+            <div>
+              <h2>Operativos</h2>
+              <p>Rellena los nombres para cerrar el lobby y pasar al mapa.</p>
+            </div>
+          </div>
+          <div id="name-grid" class="name-grid"></div>
+          <div class="stage-actions name-next-action">
+            <button id="to-maps-button" class="muzzle-button" type="button">Elegir mapa</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="mapas" class="stage stage-maps is-hidden">
+        <div class="section-heading">
+          <div>
+            <h2>02 . Seleccionar mapa</h2>
+            <p>Elige el escenario operativo. Cada mapa ajusta el pool de armas.</p>
+          </div>
+          <div class="readout">
+            <span>Mapa activo</span>
+            <strong id="selected-map-name">Erangel</strong>
+          </div>
+        </div>
+        <div id="map-grid" class="map-grid" aria-label="Mapas disponibles"></div>
+        <div class="stage-actions map-loadout-action">
+          <button id="to-loadouts-button" class="muzzle-button" type="button">Preparar loadouts</button>
+        </div>
+      </section>
+
+      <section id="loadouts" class="stage stage-loadouts is-hidden">
+        <div class="section-heading">
+          <div>
+            <h2>03 . Generar loadout</h2>
+            <p id="pool-summary">Listo para randomizar la squad completa.</p>
+          </div>
+          <label class="crate-toggle">
+            <input id="include-crate" type="checkbox">
+            <span>Incluir crate</span>
+          </label>
+        </div>
+        <div id="results" class="results-grid" aria-live="polite"></div>
+        <div class="stage-actions loadout-actions">
+          <button id="randomize-button" class="muzzle-button large" type="button">Randomizar todos</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
