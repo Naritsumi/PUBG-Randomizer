@@ -82,22 +82,22 @@ const operatorProfiles = [
   {
     role: "Clutch ninja",
     note: "Silencioso, mira todo.",
-    image: "OIP.M-N4MFqlNr9mwy_thHNHWAHaHa.jpg",
+    image: "assets/cats/cat-clutch-ninja.jpg",
   },
   {
     role: "IGL serio",
     note: "Callouts frios, mucho tilt.",
-    image: "OIP.b_l-L9fGTLqVZBx9NbKcrgHaHa.jpg",
+    image: "assets/cats/cat-igl-serio.jpg",
   },
   {
     role: "Relax",
     note: "Siempre detrás, siempre chill.",
-    image: "OIP.M_q69-FiQXqQuG6Nd1fwjQHaHV.jpg",
+    image: "assets/cats/cat-rush-relax.jpg",
   },
   {
     role: "Entry alerta",
     note: "Pánico, solo pánico.",
-    image: "OIP.4oVPdB6JxH1VSJS1sIXl9wHaHF.jpg",
+    image: "assets/cats/cat-entry-alerta.jpg",
   },
 ];
 
@@ -288,13 +288,14 @@ function renderCards() {
 
   results.classList.toggle("is-solo", selectedMode === "solo");
   results.innerHTML = players.map((player, index) => `
-    <article class="loadout-card ${selectedMode === "solo" ? "solo-card" : ""}" data-player-index="${index}" data-player="${escapeHtml(player)}" data-map="${map.name}">
+    <article class="loadout-card ${selectedMode === "solo" ? "solo-card" : ""}" data-player-index="${index}" data-player="${escapeHtml(player)}" data-map="${map.name}" data-avatar-image="${operatorProfiles[selectedMode === "solo" ? soloProfileIndex : index % operatorProfiles.length].image}" data-avatar-role="${operatorProfiles[selectedMode === "solo" ? soloProfileIndex : index % operatorProfiles.length].role}">
       <header class="loadout-head">
         <div class="operator">
           <h3>${escapeHtml(player)}</h3>
         </div>
         <div class="hud-tools">
           <div class="hud-line">OP: P${index + 1} . MAP: ${map.tag} . STATUS: IDLE</div>
+          <button class="share-loadout-button" type="button" data-share-loadout disabled>Compartir</button>
         </div>
       </header>
       <div class="shell-layer" aria-hidden="true"></div>
@@ -422,6 +423,158 @@ function fireButton(button) {
   setTimeout(() => button.classList.remove("is-firing"), 320);
 }
 
+function loadCanvasImage(src) {
+  return new Promise((resolve) => {
+    if (!src) {
+      resolve(null);
+      return;
+    }
+
+    const image = new Image();
+    if (/^https?:\/\//i.test(src)) {
+      image.crossOrigin = "anonymous";
+    }
+    image.onload = () => resolve(image);
+    image.onerror = () => resolve(null);
+    image.src = src;
+  });
+}
+
+function drawShareText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(" ");
+  let line = "";
+  let currentY = y;
+
+  words.forEach((word) => {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      ctx.fillText(line, x, currentY);
+      line = word;
+      currentY += lineHeight;
+    } else {
+      line = test;
+    }
+  });
+
+  if (line) ctx.fillText(line, x, currentY);
+}
+
+async function renderLoadoutImage(card) {
+  const width = 1080;
+  const height = 620;
+  const canvas = document.createElement("canvas");
+  canvas.width = width * 2;
+  canvas.height = height * 2;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(2, 2);
+
+  const player = card.dataset.player || "Jugador";
+  const map = card.dataset.map || getMap().name;
+  const primary = card.dataset.primaryName || "Sin primaria";
+  const secondary = card.dataset.secondaryName || "Sin secundaria";
+  const primaryAmmo = card.dataset.primaryAmmo || "";
+  const secondaryAmmo = card.dataset.secondaryAmmo || "";
+  const avatar = await loadCanvasImage(card.dataset.avatarImage);
+  const primaryImage = await loadCanvasImage(card.dataset.primaryImage);
+  const secondaryImage = await loadCanvasImage(card.dataset.secondaryImage);
+
+  ctx.fillStyle = "#120c06";
+  ctx.fillRect(0, 0, width, height);
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, "rgba(255,136,0,.24)");
+  gradient.addColorStop(.42, "rgba(255,136,0,.05)");
+  gradient.addColorStop(1, "rgba(0,0,0,.15)");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.strokeStyle = "#ff8800";
+  ctx.lineWidth = 4;
+  ctx.strokeRect(24, 24, width - 48, height - 48);
+  ctx.strokeStyle = "rgba(255,136,0,.35)";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(42, 42, width - 84, height - 84);
+
+  ctx.fillStyle = "#ff8800";
+  ctx.font = "700 20px Consolas, monospace";
+  ctx.fillText("MI EXCEL . LOADOUT RANDOMIZER", 62, 82);
+  ctx.fillStyle = "#e8e2cf";
+  ctx.font = "900 56px Arial, sans-serif";
+  drawShareText(ctx, player.toUpperCase(), 62, 142, 620, 58);
+  ctx.fillStyle = "#a87d55";
+  ctx.font = "700 18px Consolas, monospace";
+  ctx.fillText(`MAPA . ${map.toUpperCase()}`, 62, 184);
+  ctx.fillText(`OPERATIVO . ${card.dataset.avatarRole || "TACTICAL AVATAR"}`, 62, 214);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(740, 62, 260, 260);
+  ctx.clip();
+  if (avatar) {
+    ctx.drawImage(avatar, 740, 62, 260, 260);
+  } else {
+    ctx.fillStyle = "#1c1610";
+    ctx.fillRect(740, 62, 260, 260);
+  }
+  ctx.restore();
+  ctx.strokeStyle = "rgba(255,136,0,.65)";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(740, 62, 260, 260);
+
+  const drawWeaponPanel = (label, name, ammo, image, y) => {
+    ctx.fillStyle = "rgba(8, 6, 4, .74)";
+    ctx.fillRect(62, y, 956, 138);
+    ctx.strokeStyle = "rgba(255,136,0,.38)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(62, y, 956, 138);
+
+    if (image) ctx.drawImage(image, 82, y + 16, 260, 106);
+    ctx.fillStyle = "#ff8800";
+    ctx.font = "700 18px Consolas, monospace";
+    ctx.fillText(label, 378, y + 42);
+    ctx.fillStyle = "#e8e2cf";
+    ctx.font = "900 42px Arial, sans-serif";
+    ctx.fillText(name, 378, y + 88);
+    ctx.fillStyle = "#a87d55";
+    ctx.font = "700 17px Consolas, monospace";
+    ctx.fillText(ammo, 378, y + 116);
+  };
+
+  drawWeaponPanel("PRIMARY", primary, primaryAmmo, primaryImage, 346);
+  drawWeaponPanel("SECONDARY", secondary, secondaryAmmo, secondaryImage, 496);
+
+  return canvas;
+}
+
+async function shareLoadout(card, button) {
+  if (!card || card.dataset.ready !== "true") return;
+
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = "Generando...";
+
+  try {
+    const canvas = await renderLoadoutImage(card);
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    const fileName = `loadout-${(card.dataset.player || "jugador").toLowerCase().replace(/[^a-z0-9]+/g, "-")}.png`;
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1200);
+    button.textContent = "PNG guardado";
+  } catch (error) {
+    button.textContent = "Error";
+  }
+
+  setTimeout(() => {
+    button.textContent = original;
+    button.disabled = card.dataset.ready !== "true";
+  }, 1600);
+}
+
 async function randomizeAll() {
   if (isSpinning) return;
   const cards = Array.from(results.querySelectorAll(".loadout-card"));
@@ -472,6 +625,8 @@ async function randomizeAll() {
       card.dataset.secondaryName = secondary.name;
       card.dataset.secondaryAmmo = secondary.ammo;
       card.dataset.secondaryImage = secondary.image;
+      card.dataset.ready = "true";
+      card.querySelector("[data-share-loadout]").disabled = false;
       card.classList.remove("is-spinning");
     });
   });
@@ -548,6 +703,13 @@ squadSizeButtons.addEventListener("click", (event) => {
 
 nameGrid.addEventListener("input", () => {
   hideMapAndLoadoutStages();
+});
+
+results.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-share-loadout]");
+  if (!button) return;
+  const card = button.closest(".loadout-card");
+  shareLoadout(card, button);
 });
 
 randomizeButton.addEventListener("click", randomizeAll);
