@@ -92,10 +92,16 @@
             <h2>03 . Generar loadout</h2>
             <p id="pool-summary">Listo para randomizar la squad completa.</p>
           </div>
-          <label class="crate-toggle">
-            <input id="include-crate" type="checkbox">
-            <span>Incluir crate</span>
-          </label>
+          <div class="loadout-filters" aria-label="Filtros de armas">
+            <label class="filter-toggle">
+              <input id="include-crate" type="checkbox">
+              <span>Crate</span>
+            </label>
+            <label class="filter-toggle">
+              <input id="include-map-exclusive" type="checkbox">
+              <span>Exclusivas de mapa</span>
+            </label>
+          </div>
         </div>
         <div id="results" class="results-grid" aria-live="polite"></div>
         <div class="stage-actions loadout-actions">
