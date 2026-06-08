@@ -130,6 +130,7 @@ const poolSummary = document.querySelector("#pool-summary");
 const results = document.querySelector("#results");
 const randomizeButton = document.querySelector("#randomize-button");
 const includeCrate = document.querySelector("#include-crate");
+const includeMapExclusive = document.querySelector("#include-map-exclusive");
 
 function getMap() {
   return maps.find((map) => map.id === selectedMapId) ?? maps[0];
@@ -140,6 +141,7 @@ function weaponPool(mapId, slot) {
   return weapons.filter((weapon) => {
     if (!cats.includes(weapon.cat)) return false;
     if (weapon.crateOnly && !includeCrate.checked) return false;
+    if (weapon.mapExclusive && !includeMapExclusive.checked) return false;
     if (weapon.mapExclusive && !weapon.mapExclusive.includes(mapId)) return false;
     return true;
   });
@@ -714,12 +716,15 @@ nameGrid.addEventListener("input", () => {
   hideMapAndLoadoutStages();
 });
 
-includeCrate.addEventListener("change", () => {
+function refreshLoadoutFilters() {
   updateMapState();
   if (!loadoutSection.classList.contains("is-hidden")) {
     renderCards();
   }
-});
+}
+
+includeCrate.addEventListener("change", refreshLoadoutFilters);
+includeMapExclusive.addEventListener("change", refreshLoadoutFilters);
 
 results.addEventListener("click", (event) => {
   const button = event.target.closest("[data-share-loadout]");

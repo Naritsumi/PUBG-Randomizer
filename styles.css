@@ -375,7 +375,15 @@ h2 {
   flex-wrap: wrap;
 }
 
-.crate-toggle {
+.loadout-filters {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-toggle {
   min-height: 42px;
   display: inline-flex;
   align-items: center;
@@ -391,7 +399,7 @@ h2 {
   text-transform: uppercase;
 }
 
-.crate-toggle input {
+.filter-toggle input {
   width: 18px;
   height: 18px;
   accent-color: var(--accent);
