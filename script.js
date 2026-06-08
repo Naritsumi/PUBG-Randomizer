@@ -129,8 +129,17 @@ const nameGrid = document.querySelector("#name-grid");
 const poolSummary = document.querySelector("#pool-summary");
 const results = document.querySelector("#results");
 const randomizeButton = document.querySelector("#randomize-button");
+const copySquadButton = document.querySelector("#copy-squad-button");
 const includeCrate = document.querySelector("#include-crate");
 const includeMapExclusive = document.querySelector("#include-map-exclusive");
+
+function getCopyButtonLabel() {
+  return selectedMode === "solo" ? "Copiar loadout" : "Copiar squad";
+}
+
+function resetCopyButtonLabel() {
+  copySquadButton.textContent = getCopyButtonLabel();
+}
 
 function getMap() {
   return maps.find((map) => map.id === selectedMapId) ?? maps[0];
@@ -318,6 +327,8 @@ function renderCards() {
       <div class="locked-line">Esperando orden de randomizar.</div>
     </article>
   `).join("");
+  copySquadButton.disabled = true;
+  resetCopyButtonLabel();
 }
 
 function setStepActive(hash) {
@@ -586,6 +597,70 @@ async function shareLoadout(card, button) {
   }, 1600);
 }
 
+function buildSquadShareText() {
+  const cards = Array.from(results.querySelectorAll(".loadout-card"))
+    .filter((card) => card.dataset.ready === "true");
+  if (!cards.length) return "";
+
+  const map = getMap();
+  const lines = cards.map((card) => {
+    const player = card.dataset.player || "Jugador";
+    const primary = `${card.dataset.primaryName} (${card.dataset.primaryAmmo})`;
+    const secondary = `${card.dataset.secondaryName} (${card.dataset.secondaryAmmo})`;
+    return `${player}\nPRIMARY   ${primary}\nSECONDARY ${secondary}`;
+  });
+
+  return [
+    "```",
+    "MI EXCEL . Loadout Randomizer",
+    `Modo: ${selectedMode === "solo" ? "Solo" : `Squad ${cards.length}`}`,
+    `Mapa: ${map.name}`,
+    "",
+    lines.join("\n\n"),
+    "```",
+  ].join("\n");
+}
+
+function fallbackCopy(text) {
+  try {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.style.position = "fixed";
+    area.style.left = "-9999px";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    const ok = document.execCommand("copy");
+    area.remove();
+    return ok;
+  } catch (error) {
+    return false;
+  }
+}
+
+async function copySquadResult() {
+  const text = buildSquadShareText();
+  if (!text) return;
+
+  let ok = false;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      ok = true;
+    } else {
+      ok = fallbackCopy(text);
+    }
+  } catch (error) {
+    ok = fallbackCopy(text);
+  }
+
+  const original = getCopyButtonLabel();
+  copySquadButton.textContent = ok ? "Copiado. Pega en Discord" : "No se pudo copiar";
+  setTimeout(() => {
+    copySquadButton.textContent = original;
+  }, 1800);
+}
+
 async function randomizeAll() {
   if (isSpinning) return;
   const cards = Array.from(results.querySelectorAll(".loadout-card"));
@@ -596,6 +671,8 @@ async function randomizeAll() {
 
   isSpinning = true;
   randomizeButton.disabled = true;
+  copySquadButton.disabled = true;
+  resetCopyButtonLabel();
   randomizeButton.textContent = "Randomizando...";
   fireButton(randomizeButton);
 
@@ -645,6 +722,8 @@ async function randomizeAll() {
   await Promise.all(jobs);
   isSpinning = false;
   randomizeButton.disabled = false;
+  copySquadButton.disabled = false;
+  resetCopyButtonLabel();
   randomizeButton.textContent = selectedMode === "solo" ? "Abrir cajas" : "Randomizar todos";
 }
 
@@ -668,6 +747,7 @@ modeButtons.addEventListener("click", (event) => {
   namePanel.classList.add("is-hidden");
   hideMapAndLoadoutStages();
   renderNameInputs();
+  resetCopyButtonLabel();
   updateMapState();
 });
 
@@ -734,6 +814,7 @@ results.addEventListener("click", (event) => {
 });
 
 randomizeButton.addEventListener("click", randomizeAll);
+copySquadButton.addEventListener("click", copySquadResult);
 
 document.querySelectorAll(".step-link").forEach((link) => {
   link.addEventListener("click", () => setStepActive(link.getAttribute("href")));
