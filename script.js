@@ -42,12 +42,12 @@ const weapons = [
   { id: "win94", name: "Win94", cat: "SR", ammo: ".45", mapExclusive: ["miramar"], image: weaponImage("win94") },
   { id: "mosin", name: "Mosin Nagant", cat: "SR", ammo: "7.62mm", mapExclusive: ["erangel", "vikendi"], image: weaponImage("mosin_nagant") },
   { id: "lynx", name: "Lynx AMR", cat: "SR", ammo: ".50", mapExclusive: ["taego"], image: weaponImage("lynx_amr") },
-  { id: "ump45", name: "UMP45", cat: "SMG", ammo: ".45", image: weaponImage("ump45") },
+  { id: "ump", name: "UMP", cat: "SMG", ammo: "9mm", image: weaponImage("ump45") },
   { id: "vector", name: "Vector", cat: "SMG", ammo: "9mm", image: weaponImage("vector") },
-  { id: "tommy", name: "Tommy Gun", cat: "SMG", ammo: ".45", image: weaponImage("tommy_gun") },
+  { id: "tommy", name: "Tommy Gun", cat: "SMG", ammo: "9mm", image: weaponImage("tommy_gun") },
   { id: "uzi", name: "Micro UZI", cat: "SMG", ammo: "9mm", image: weaponImage("micro_uzi") },
   { id: "bizon", name: "PP-19 Bizon", cat: "SMG", ammo: "9mm", image: weaponImage("pp19_bizon") },
-  { id: "mp5k", name: "MP5K", cat: "SMG", ammo: "9mm", mapExclusive: ["vikendi"], image: weaponImage("mp5k") },
+  { id: "mp5k", name: "MP5K", cat: "SMG", ammo: "9mm", image: weaponImage("mp5k") },
   { id: "js9", name: "JS9", cat: "SMG", ammo: "9mm", mapExclusive: ["rondo"], image: weaponImage("js9") },
   { id: "p90", name: "P90", cat: "SMG", ammo: "5.7mm", crateOnly: true, image: weaponImage("p90") },
   { id: "s686", name: "S686", cat: "SG", ammo: "12-gauge", image: weaponImage("s686") },
@@ -130,6 +130,7 @@ const poolSummary = document.querySelector("#pool-summary");
 const results = document.querySelector("#results");
 const randomizeButton = document.querySelector("#randomize-button");
 const includeCrate = document.querySelector("#include-crate");
+const includeMapExclusive = document.querySelector("#include-map-exclusive");
 
 function getMap() {
   return maps.find((map) => map.id === selectedMapId) ?? maps[0];
@@ -140,6 +141,7 @@ function weaponPool(mapId, slot) {
   return weapons.filter((weapon) => {
     if (!cats.includes(weapon.cat)) return false;
     if (weapon.crateOnly && !includeCrate.checked) return false;
+    if (weapon.mapExclusive && !includeMapExclusive.checked) return false;
     if (weapon.mapExclusive && !weapon.mapExclusive.includes(mapId)) return false;
     return true;
   });
@@ -714,12 +716,15 @@ nameGrid.addEventListener("input", () => {
   hideMapAndLoadoutStages();
 });
 
-includeCrate.addEventListener("change", () => {
+function refreshLoadoutFilters() {
   updateMapState();
   if (!loadoutSection.classList.contains("is-hidden")) {
     renderCards();
   }
-});
+}
+
+includeCrate.addEventListener("change", refreshLoadoutFilters);
+includeMapExclusive.addEventListener("change", refreshLoadoutFilters);
 
 results.addEventListener("click", (event) => {
   const button = event.target.closest("[data-share-loadout]");
